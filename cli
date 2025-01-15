@@ -1,0 +1,33 @@
+#!/bin/env bash
+source .env
+
+help() {
+  echo "
+    COMMANDS:
+     - help   : Help text
+     - start  : Starts the app
+     - stop   : Stops the app and removes all SymmetricDS artifacts
+  "
+}
+
+start() {
+  docker build --build-arg APP_NAME="$APP_NAME" --no-cache -t symmetricds .
+  docker run -d --restart always -p 31415:31415 --name sym -v "$APP_SYNC_DIR":/opt/symmetric-app symmetricds
+}
+
+stop() {
+  docker exec sym bin/symadmin --engine "$APP_NAME" uninstall
+  docker stop sym && docker rm sym
+}
+
+case "$1" in
+"help" | "")
+  help
+  ;;
+"start")
+  start
+  ;;
+"stop")
+  stop
+  ;;
+esac

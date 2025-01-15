@@ -4,8 +4,7 @@ COPY . ./engines
 
 ARG APP_NAME
 
-RUN bin/symadmin --engine $APP_NAME uninstall &&\
-    bin/symadmin --engine $APP_NAME create-sym-tables &&\
+RUN bin/symadmin --engine $APP_NAME create-sym-tables &&\
     bin/dbimport --engine $APP_NAME engines/insert.sql
 
 VOLUME ["/opt/symmetric-app"]
